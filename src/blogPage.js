@@ -1,63 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./BlogPage.css";
+import SearchPage from "./SearchPage"; // 导入新的搜索页面组件
 
 function BlogPage() {
-  // State to manage the selected course
-  const [selectedCourse, setSelectedCourse] = useState("CS353");
-  // State to manage the list of posts
+  const [selectedCourse, setSelectedCourse] = useState("CS385");
   const [posts, setPosts] = useState([]);
-  // State to manage the content of the new post
   const [newPostContent, setNewPostContent] = useState("");
-  // State to manage the selected topics for the new post
-  const [selectedTopics, setSelectedTopics] = useState([]);
-  // State to manage the selected date for the new post
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [weather, setWeather] = useState(null); // 存储天气信息
+  const [search, setSearch] = useState(""); // 搜索状态
+  const [showSearchPage, setShowSearchPage] = useState(false); // 控制搜索页面显示
 
-  // List of available courses
-  const courses = ["CS353", "CS370", "CS264", "CS357", "CS310"];
-  // List of available topics
-  const topics = [
-    "Gitlab",
-    "Balsamiq",
-    "React",
-    "SQL",
-    "Databases",
-    "Firebase",
-    "SCRUM",
-    "JavaScript",
-    "Node.js",
-    "Kubernetes",
-    "VSCode + Copilot",
-  ];
+  const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"];
 
-  // Function to handle adding a new post
+  useEffect(() => {
+    // 从天气 API 获取天气数据
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=53.385&longitude=-6.5936&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode`
+        );
+        const data = await response.json();
+        setWeather(data);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+    fetchWeather();
+  }, []);
+
   const handlePost = () => {
     if (newPostContent.trim()) {
       const newPost = {
         course: selectedCourse,
         content: newPostContent,
-        topics: selectedTopics,
         date: selectedDate.toLocaleDateString(),
         author: "Author Name",
         avatar: "Screenshot.png",
         likes: 0,
         comments: [],
       };
-      // Add the new post to the list of posts
       setPosts([newPost, ...posts]);
-      // Clear the new post content and selected topics
       setNewPostContent("");
-      setSelectedTopics([]);
     }
-  };
-
-  // Function to toggle the selection of a topic
-  const toggleTopic = (topic) => {
-    setSelectedTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
-    );
   };
 
   return (
@@ -66,29 +53,44 @@ function BlogPage() {
         courses={courses}
         setSelectedCourse={setSelectedCourse}
         selectedCourse={selectedCourse}
+        setShowSearchPage={setShowSearchPage} // 传递控制搜索页面显示的函数
       />
       <div className="content">
         <Sidebar
-          topics={topics}
-          selectedTopics={selectedTopics}
-          toggleTopic={toggleTopic}
+          weather={weather}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
-        <PostArea
-          posts={posts}
-          newPostContent={newPostContent}
-          setNewPostContent={setNewPostContent}
-          handlePost={handlePost}
-          selectedCourse={selectedCourse}
-        />
+        <div className="main-content">
+          {showSearchPage ? (
+            <SearchPage
+              posts={posts}
+              search={search}
+              setSearch={setSearch}
+              setShowSearchPage={setShowSearchPage} // 传递控制返回博客页面的函数
+            />
+          ) : (
+            <PostArea
+              posts={posts}
+              newPostContent={newPostContent}
+              setNewPostContent={setNewPostContent}
+              handlePost={handlePost}
+              selectedCourse={selectedCourse}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-// Header component with course selection buttons
-function Header({ courses, setSelectedCourse, selectedCourse }) {
+// Header 组件：显示课程切换按钮
+function Header({
+  courses,
+  setSelectedCourse,
+  selectedCourse,
+  setShowSearchPage,
+}) {
   return (
     <header className="header">
       {courses.map((course) => (
@@ -100,45 +102,96 @@ function Header({ courses, setSelectedCourse, selectedCourse }) {
           {course}
         </button>
       ))}
-      <button onClick={() => console.log("Starting post...")}>
-        Start Post
-      </button>
+      <button onClick={() => setShowSearchPage(true)}>Search Post</button>
     </header>
   );
 }
 
-// Sidebar component with a calendar and selectable topics
-function Sidebar({
-  topics,
-  selectedTopics,
-  toggleTopic,
-  selectedDate,
-  setSelectedDate,
-}) {
+// Sidebar 组件：显示日历和天气信息
+function Sidebar({ weather, selectedDate, setSelectedDate }) {
+  const weatherConditions = {
+    0: "Clear sky",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    45: "Fog",
+    48: "Depositing rime fog",
+    51: "Drizzle: Light",
+    53: "Drizzle: Moderate",
+    55: "Drizzle: Dense intensity",
+    56: "Freezing Drizzle: Light",
+    57: "Freezing Drizzle: Dense intensity",
+    61: "Rain: Slight",
+    63: "Rain: Moderate",
+    65: "Rain: Heavy intensity",
+    66: "Freezing Rain: Light",
+    67: "Freezing Rain: Heavy intensity",
+    71: "Snow fall: Slight",
+    73: "Snow fall: Moderate",
+    75: "Snow fall: Heavy intensity",
+    77: "Snow grains",
+    80: "Rain showers: Slight",
+    81: "Rain showers: Moderate",
+    82: "Rain showers: Violent",
+    85: "Snow showers: Slight",
+    86: "Snow showers: Heavy",
+    95: "Thunderstorm: Slight or moderate",
+    96: "Thunderstorm with slight hail",
+    99: "Thunderstorm with heavy hail",
+  };
+
   return (
     <div className="sidebar">
       <div className="calendar">
         <Calendar value={selectedDate} onChange={setSelectedDate} />
       </div>
-      <div className="topics">
-        <h4>Topics</h4>
-        <ul>
-          {topics.map((topic) => (
-            <li
-              key={topic}
-              onClick={() => toggleTopic(topic)}
-              className={selectedTopics.includes(topic) ? "selected" : ""}
-            >
-              #{topic}
-            </li>
-          ))}
-        </ul>
+      <hr /> {/* 日历和天气之间的分隔符 */}
+      <div className="weather">
+        <h4>Weather</h4>
+        {weather ? (
+          <div>
+            <p>
+              <strong>Location:</strong> Maynooth, County Kildare
+            </p>
+            <p>
+              <strong>Current Temp:</strong>{" "}
+              {weather.current_weather.temperature}°C
+            </p>
+            <p>
+              <strong>Condition:</strong>{" "}
+              {weatherConditions[weather.current_weather.weathercode]}
+            </p>
+            <hr /> {/* 当前天气和预报之间的分隔符 */}
+            <h5>Forecast:</h5>
+            {weather.daily.time.slice(0, 1).map((date, index) => (
+              <div key={index} style={{ marginBottom: "10px" }}>
+                <p>
+                  <strong>Date:</strong> {new Date(date).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Max Temp:</strong>{" "}
+                  {weather.daily.temperature_2m_max[index]}°C
+                </p>
+                <p>
+                  <strong>Min Temp:</strong>{" "}
+                  {weather.daily.temperature_2m_min[index]}°C
+                </p>
+                <p>
+                  <strong>Condition:</strong>{" "}
+                  {weatherConditions[weather.daily.weathercode[index]]}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>Loading weather...</p>
+        )}
       </div>
     </div>
   );
 }
 
-// PostArea component to display posts and handle new post creation
+// PostArea 组件：显示帖子和添加新帖子的功能
 function PostArea({
   posts,
   newPostContent,
@@ -146,7 +199,6 @@ function PostArea({
   handlePost,
   selectedCourse,
 }) {
-  // Filter posts based on the selected course
   const filteredPosts = posts.filter((post) => post.course === selectedCourse);
 
   return (
@@ -165,19 +217,17 @@ function PostArea({
   );
 }
 
-// Post component to display individual posts with like, share, and comment functionalities
+// Post 组件：显示单个帖子
 function Post({ post }) {
   const [likes, setLikes] = useState(post.likes);
   const [comments, setComments] = useState(post.comments);
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
 
-  // Function to handle liking a post
   const handleLike = () => {
     setLikes(likes + 1);
   };
 
-  // Function to handle adding a new comment
   const handleAddComment = () => {
     if (newComment.trim()) {
       const comment = {
@@ -186,9 +236,7 @@ function Post({ post }) {
         content: newComment,
         date: new Date().toLocaleString(),
       };
-      // Add the new comment to the list of comments
       setComments([...comments, comment]);
-      // Clear the new comment input
       setNewComment("");
     }
   };
@@ -201,7 +249,6 @@ function Post({ post }) {
       </div>
       <p>{post.content}</p>
       <div className="post-footer">
-        <span>Tags: {post.topics.join(", ")}</span>
         <span>Date: {post.date}</span>
       </div>
       <div className="post-actions">
@@ -223,11 +270,8 @@ function Post({ post }) {
                 alt="Avatar"
                 className="comment-avatar"
               />
-              <div className="comment-content">
-                <span className="comment-author">{comment.author}</span>
-                <span className="comment-date">{comment.date}</span>
-                <p>{comment.content}</p>
-              </div>
+              <span className="comment-date">{comment.date}</span>
+              <p>{comment.content}</p>
             </div>
           ))}
           <input

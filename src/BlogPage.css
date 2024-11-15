@@ -57,23 +57,37 @@
   color: white;
 }
 
-/* Post area styling */
-.post-area {
+/* Main content area styling */
+.main-content {
   flex: 3;
   padding: 20px;
   background-color: #fff;
   overflow-y: auto;
 }
 
+/* Post area styling */
+.post-area {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Search page styling */
+.search-page {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Input field and post button */
-.post-area input[type="text"] {
+.post-area input[type="text"],
+.search-page input[type="text"] {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
 }
 
-.post-area button {
+.post-area button,
+.search-page button {
   padding: 8px 16px;
   background-color: #007bff;
   color: white;
