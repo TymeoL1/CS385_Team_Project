@@ -1,0 +1,250 @@
+/* Main blog page styling */
+.blog-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+/* Header styling */
+.header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+}
+
+/* Active course selection button */
+.header button.active {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+}
+
+/* Content layout */
+.content {
+  display: flex;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+/* Sidebar styling */
+.sidebar {
+  flex: 1;
+  min-width: 250px;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+/* Topics section */
+.sidebar .topics ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar .topics li {
+  margin-bottom: 8px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sidebar .topics li.selected {
+  background-color: #80baf8;
+  color: white;
+}
+
+/* Post area styling */
+.post-area {
+  flex: 3;
+  padding: 20px;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+/* Input field and post button */
+.post-area input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+}
+
+.post-area button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Individual post styling */
+.post {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.post .post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post .post-header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* Post footer for tags and date */
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* Actions for like, share, and comment buttons */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+}
+
+/* Comments section styling */
+.post-comments {
+  margin-top: 15px;
+  background-color: #e9f1fb;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.post-comments h4 {
+  margin-top: 0;
+}
+
+/* Individual comment styling */
+.comment {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.comment-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.comment-content {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 8px;
+  width: 100%;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.comment-author {
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.comment-date {
+  font-size: 0.75em;
+  color: #888;
+  margin-left: 5px;
+}
+
+.comment p {
+  font-size: 0.9em;
+  margin: 5px 0 0;
+}
+
+/* Comment input and button */
+.post-comments input[type="text"] {
+  width: calc(100% - 80px);
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.post-comments button {
+  padding: 8px 12px;
+  margin-top: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Calendar.css */
+
+/* Calendar container styling */
+.calendar {
+  margin-bottom: 20px; /* Bottom margin */
+}
+
+/* React Calendar component styling */
+.react-calendar {
+  width: 100%; /* Width */
+  background-color: #e1f5fe; /* Background color */
+  border: none; /* No border */
+  border-radius: 10px; /* Border radius */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Date cell styling */
+.react-calendar__tile {
+  background-color: #b3e5fc; /* Background color */
+  color: #01579b; /* Font color */
+  border-radius: 5px; /* Border radius */
+  transition: background-color 0.5s ease; /* Background color transition effect */
+}
+
+/* Selected date cell styling */
+.react-calendar__tile--active {
+  background-color: #0288d1; /* Background color */
+  color: white; /* Font color */
+}
+
+/* Date cell hover styling */
+.react-calendar__tile:hover {
+  background-color: #6acbf8; /* Background color */
+}
+
+/* Calendar navigation button styling */
+.react-calendar__navigation button {
+  color: #ffffff; /* Font color */
+  background-color: #007bff; /* Background color */
+  border: none; /* No border */
+  border-radius: 4px; /* Border radius */
+  margin: 2px; /* Margin */
+  padding: 5px; /* Padding */
+  transition: background-color 0.3s ease; /* Background color transition effect */
+}
+
+/* Calendar navigation button hover styling */
+.react-calendar__navigation button:hover {
+  background-color: #81d4fa; /* Background color */
+}
