@@ -1,3 +1,6 @@
+.globle {
+  width: 100%;
+}
 /* Main blog page styling */
 .blog-page {
   font-family: Arial, sans-serif;
