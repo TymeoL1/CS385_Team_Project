@@ -61,6 +61,7 @@ function BlogPage() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
+
         <div className="main-content">
           {showSearchPage ? (
             <SearchPage
