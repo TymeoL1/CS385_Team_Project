@@ -30,19 +30,18 @@ const User = mongoose.model("User", UserSchema, "users");
 // 登录验证接口
 app.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;// 获取用户名和密码
+    const { username, password } = req.body;
     console.log("收到登录请求:", { username, password });
-    const user = await User.findOne({ username, password }); // 数据库查询
+    const user = await User.findOne({ username, password });
     console.log("数据库查询结果:", user);
     if (user) {
-      res.status(200).json({ message: "Login successful" });
+      res.status(200).json({ success: true, message: "Login successful" });
     } else {
-      res.status(401).json({ message: "Invalid username or password" });
+      res.status(401).json({ success: false, message: "Invalid username or password" });
     }
   } catch (err) {
-    res.status(500).json({ message: "An error occurred", error: err });
+    res.status(500).json({ success: false, message: "An error occurred", error: err });
   }
 });
-
 // 启动服务器
 app.listen(PORT, () => console.log('Server running on http://localhost:5000'));
