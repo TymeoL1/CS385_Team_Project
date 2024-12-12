@@ -1,11 +1,11 @@
-12 Dec 2024 Update <br>
-12月12日更新：<br>
+# 12.Dec.2024 Update <br>
+# 2024年12月12日更新：<br>
 
 Reorganized the path structure <br>
 更新了文件结构保证合理性<br>
 
-合并了原'CS385Project/welcome' 到 'CS385Project/frontend/mian/src' 并更名为SingPage <br>
-Merged the original flie 'CS385Project/welcome' into 'CS385Project/frontend/mian/src' and renamed it to SingPage
+合并了原'CS385Project/welcome' 到 'CS385Project/frontend/mian/src' 并更名为SignPage <br>
+Merged the original flie 'CS385Project/welcome' into 'CS385Project/frontend/mian/src' and renamed it to SignPage
 
 Use React router function to make page jump <br>
 添加React Router功能实现页面跳转
