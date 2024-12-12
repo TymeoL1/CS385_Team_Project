@@ -1,3 +1,20 @@
+12 Dec 2024 Update
+12月12日更新：
+Reorganized the path structure
+更新了文件结构保证合理性
+
+合并了原'CS385Project/welcome' 到 'CS385Project/frontend/mian/src' 并更名为SingPage
+Merged the original flie 'CS385Project/welcome' into 'CS385Project/frontend/mian/src' and renamed it to SingPage
+
+Use React router function to make page jump
+添加React Router功能实现页面跳转
+
+修改原branch中/App.js 为 /Welcome.js
+Modify /App.js in the original branch to /Welcome.js
+
+Add a variable [ isLoggedIn ] in /Welcome to update the status to implement simple offline verification (only applicable to offline, no authentication methods such as Token are used to ensure the security of communication between the front-end and back-end servers)
+在/Welcome中添加了一个变量 [ isLoggedIn ] 用于更新状态实现简单的离线验证（仅适用于离线，未使用Token等认证方法保证前后端服务器通信的安全性）
+
 # 5/12/2024
 增加了Homepage
 
