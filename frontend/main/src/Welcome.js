@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import BlogPage from "./blogPage.js";
 import "./App.css";
 import SignPage from "./sign_page/src/SignPage";
@@ -27,13 +33,10 @@ function WelcomePage() {
       style={{ backgroundImage: `url(${images[currentImageIndex]})` }}
     >
       <div className="welcome-content">
-        <h1 className="welcome-title">Welcome to My Website</h1>
+        <h1 className="welcome-title">Welcome to CS Social Web</h1>
         <div className="button-container">
           <button className="btn" onClick={() => navigate("/login")}>
             Log in
-          </button>
-          <button className="btn" onClick={() => navigate("/blog")}>
-            Blog
           </button>
         </div>
       </div>
@@ -48,13 +51,18 @@ function Welcome() {
     <Router>
       <Routes>
         <Route path="/" element={<WelcomePage />} /> {/* Welcome Page */}
-        <Route path="/login" element={<SignPage setIsLoggedIn={setIsLoggedIn} />} /> {/* Sign Page */}
+        <Route
+          path="/login"
+          element={<SignPage setIsLoggedIn={setIsLoggedIn} />}
+        />{" "}
+        {/* Sign Page */}
         <Route
           path="/blog"
           element={
             isLoggedIn ? <BlogPage /> : <Navigate to="/login" /> // 检查登录状态
           }
-        /> {/* Blog Page */}
+        />{" "}
+        {/* Blog Page */}
       </Routes>
     </Router>
   );
