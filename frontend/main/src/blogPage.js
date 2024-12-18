@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./BlogPage.css";
+import axios from "axios";
 import SearchPage from "./SearchPage";
 
 function BlogPage() {
@@ -17,6 +18,21 @@ function BlogPage() {
   const [showSearchPage, setShowSearchPage] = useState(false); // Toggle search page visibility
 
   const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"]; // List of courses
+//NEW function, get data from database
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/getPosts");
+        if (response.data.success) {
+          setPosts(response.data.posts);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     // Fetch weather data for the location
@@ -46,23 +62,33 @@ function BlogPage() {
     fetchWeather();
   }, [location]); // Update weather when location changes
 
-  const handlePost = () => {
-    // Add a new post
+  const handlePost = async () => {
     if (newPostContent.trim()) {
       const newPost = {
         course: selectedCourse,
         content: newPostContent,
         date: selectedDate.toLocaleDateString(),
-        author: "Author Name",
+        author: "Author Name", 
         avatar: "Screenshot.png",
+        //需要实现头像功能么？ 不需要可以删掉上面这行
         likes: 0,
         comments: [],
       };
-      setPosts([newPost, ...posts]);
-      setNewPostContent("");
+
+      try {
+        const response = await axios.post("http://localhost:5000/addPost", newPost);
+        if (response.data.success) {
+          setPosts([newPost, ...posts]);
+          setNewPostContent("");
+        } else {
+          console.error("Error saving post:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error sending post to server:", error);
+      }
     }
   };
-
+  
   return (
     <div className="blog-page">
       <Header
