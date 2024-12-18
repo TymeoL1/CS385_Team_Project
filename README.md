@@ -1,3 +1,9 @@
+# 18.Dec.2024 Update <br>
+# 2024年12月18日更新：<br>
+
+Add Post content recording function and save data by uploading it to the database through the backend<br>
+添加Post内容记录功能，通过后端上传到数据库保存数据
+
 # 12.Dec.2024 Update <br>
 # 2024年12月12日更新：<br>
 
