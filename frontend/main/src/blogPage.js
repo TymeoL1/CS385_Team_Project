@@ -1,5 +1,3 @@
-// BlogPage.js
-
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -8,48 +6,34 @@ import axios from "axios";
 import SearchPage from "./SearchPage";
 
 function BlogPage() {
-  // State to track the selected course
   const [selectedCourse, setSelectedCourse] = useState("CS385");
-
-  // State to store all posts
   const [posts, setPosts] = useState([]);
-
-  // State for new post content
   const [newPostContent, setNewPostContent] = useState("");
-
-  // State for the selected date on the calendar
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  // State to store weather data
   const [weather, setWeather] = useState(null);
-
-  // State to store location for weather query
   const [location, setLocation] = useState("Maynooth, Kildare");
-
-  // State for search query and visibility of search page
   const [search, setSearch] = useState("");
   const [showSearchPage, setShowSearchPage] = useState(false);
 
-  // List of available courses
   const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"];
 
-  // Fetch posts from the server when the component is mounted
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get("http://localhost:5000/getPosts");
         if (response.data.success) {
+          console.log("Fetched Posts:", response.data.posts);
           setPosts(response.data.posts);
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
-
+  
     fetchPosts();
   }, []);
+  
 
-  // Fetch weather data when location changes
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -75,7 +59,6 @@ function BlogPage() {
     fetchWeather();
   }, [location]);
 
-  // Handle adding a new post
   const handlePost = async () => {
     if (newPostContent.trim()) {
       const newPost = {
@@ -93,8 +76,9 @@ function BlogPage() {
           newPost
         );
         if (response.data.success) {
-          setPosts([response.data.post, ...posts]); // Ensure server-generated post is added
-          setNewPostContent("");
+          const createdPost = response.data.post;
+          setPosts([createdPost, ...posts]);
+          setNewPostContent(""); // 清空输入框
         } else {
           console.error("Error saving post:", response.data.message);
         }
@@ -104,25 +88,34 @@ function BlogPage() {
     }
   };
 
-  // Handle deleting a post
-  const handleDeletePost = async (postIndex) => {
+  const handleAddComment = async (postId, comment) => {
     try {
-      const postToDelete = posts[postIndex];
-      if (!postToDelete.id) {
-        console.error("Post ID is missing");
-        return;
-      }
-
-      const response = await axios.post("http://localhost:5000/deletePost", {
-        id: postToDelete.id,
+      const response = await axios.post("http://localhost:5000/addComment", {
+        postId,
+        comment,
       });
+
       if (response.data.success) {
-        setPosts(posts.filter((_, index) => index !== postIndex));
+        const updatedPost = response.data.post;
+        setPosts(posts.map((post) => (post._id === updatedPost._id ? updatedPost : post)));
+      } else {
+        console.error("Error adding comment:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error sending comment:", error.message);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await axios.post("http://localhost:5000/deletePost", { id: postId });
+      if (response.data.success) {
+        setPosts(posts.filter((post) => post._id !== postId));
       } else {
         console.error("Error deleting post:", response.data.message);
       }
     } catch (error) {
-      console.error("Error deleting post:", error);
+      console.error("Error deleting post:", error.message);
     }
   };
 
@@ -141,47 +134,44 @@ function BlogPage() {
           setSelectedDate={setSelectedDate}
           setLocation={setLocation}
         />
-
+        {/* Layer image background and functional components
+            AI assisted content completion */}
         <div className="main-content">
-          {showSearchPage ? (
-            <SearchPage
-              posts={posts}
-              search={search}
-              setSearch={setSearch}
-              setShowSearchPage={setShowSearchPage}
-            />
-          ) : (
-            <PostArea
-              posts={posts}
-              newPostContent={newPostContent}
-              setNewPostContent={setNewPostContent}
-              handlePost={handlePost}
-              handleDeletePost={handleDeletePost}
-              selectedCourse={selectedCourse}
-            />
-          )}
+          <div className="background-layer"></div>
+          <div className="content-layer">
+            {showSearchPage ? (
+              <SearchPage
+                posts={posts}
+                search={search}
+                setSearch={setSearch}
+                setShowSearchPage={setShowSearchPage}
+              />
+            ) : (
+              <PostArea
+                posts={posts}
+                newPostContent={newPostContent}
+                setNewPostContent={setNewPostContent}
+                handlePost={handlePost}
+                handleDeletePost={handleDeletePost}
+                handleAddComment={handleAddComment}
+                selectedCourse={selectedCourse}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// Header component for course selection and search functionality
-function Header({
-  courses,
-  setSelectedCourse,
-  selectedCourse,
-  setShowSearchPage,
-}) {
+function Header({ courses, setSelectedCourse, selectedCourse, setShowSearchPage }) {
   return (
     <header className="header">
       {courses.map((course) => (
         <button
           key={course}
           onClick={() => setSelectedCourse(course)}
-          className={`course-button ${
-            selectedCourse === course ? "active" : ""
-          }`}
+          className={`course-button ${selectedCourse === course ? "active" : ""}`}
         >
           {course}
         </button>
@@ -193,7 +183,6 @@ function Header({
   );
 }
 
-// Sidebar component to display calendar and weather information
 function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   const weatherConditions = {
     0: "Clear sky",
@@ -293,16 +282,18 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   );
 }
 
-// PostArea component to handle new posts and display existing posts
 function PostArea({
-  posts,
+  posts = [],
   newPostContent,
   setNewPostContent,
   handlePost,
   handleDeletePost,
+  handleAddComment,
   selectedCourse,
 }) {
-  const filteredPosts = posts.filter((post) => post.course === selectedCourse);
+  const filteredPosts = (posts || []).filter(
+    (post) => post && post.course === selectedCourse
+  );
 
   return (
     <div className="post-area">
@@ -313,37 +304,36 @@ function PostArea({
         onChange={(e) => setNewPostContent(e.target.value)}
       />
       <button onClick={handlePost}>Post</button>
-      {filteredPosts.map((post, index) => (
+      {filteredPosts.map((post) => (
         <Post
-          key={index}
+          key={post._id || post.id}
           post={post}
-          handleDelete={() => handleDeletePost(index)}
+          handleDelete={() => handleDeletePost(post._id || post.id)}
+          handleAddComment={handleAddComment}
         />
       ))}
     </div>
   );
 }
 
-// Post component to display a single post and its actions
-function Post({ post, handleDelete }) {
+function Post({ post, handleDelete, handleAddComment }) {
   const [likes, setLikes] = useState(post.likes);
   const [comments, setComments] = useState(post.comments);
   const [newComment, setNewComment] = useState("");
   const [showComments, setShowComments] = useState(false);
 
-  // Handle post like functionality
   const handleLike = () => {
     setLikes(likes + 1);
   };
 
-  // Handle adding a new comment
-  const handleAddComment = () => {
+  const handleAddCommentClick = () => {
     if (newComment.trim()) {
       const comment = {
-        author: "Author Name", // Display author name
+        author: "Anonymous",
         content: newComment,
+        date: new Date().toLocaleString(),
       };
-      setComments([...comments, comment]);
+      handleAddComment(post._id, comment);
       setNewComment("");
     }
   };
@@ -352,11 +342,7 @@ function Post({ post, handleDelete }) {
     <div className="post">
       <div className="post-header">
         <span>{post.author}</span>
-        <button onClick={handleDelete} style={{ 
-          marginLeft: "auto" ,
-          backgroundColor: "#233a52",
-          color: "#FFAA33"
-        }}>
+        <button onClick={handleDelete} style={{ marginLeft: "auto" }}>
           ❌ Delete
         </button>
       </div>
@@ -366,9 +352,6 @@ function Post({ post, handleDelete }) {
       </div>
       <div className="post-actions">
         <button onClick={handleLike}>👍 {likes} Likes</button>
-        <button onClick={() => alert("Share functionality coming soon!")}>
-          🔄 Share
-        </button>
         <button onClick={() => setShowComments(!showComments)}>
           💬 {comments.length} Comments
         </button>
@@ -377,7 +360,7 @@ function Post({ post, handleDelete }) {
         <div className="post-comments">
           <h4>Comments:</h4>
           {comments.map((comment, index) => (
-            <div key={index} className="comment">
+            <div key={index}>
               <p>
                 <strong>{comment.author}:</strong> {comment.content}
               </p>
@@ -389,7 +372,7 @@ function Post({ post, handleDelete }) {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
           />
-          <button onClick={handleAddComment}>Comment</button>
+          <button onClick={handleAddCommentClick}>Comment</button>
         </div>
       )}
     </div>

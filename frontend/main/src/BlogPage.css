@@ -5,8 +5,14 @@
   width: 100%;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 /* Main blog page styling */
 .blog-page {
+  position: relative;
   font-family: Arial, sans-serif;
   display: flex;
   width: 100%;
@@ -14,7 +20,6 @@
   height: 100vh;
   background-color: #1a2a3a;
 }
-
 /* Header styling */
 .header {
   display: flex;
@@ -100,14 +105,45 @@
   background-color: #4a90e2; /* Bright blue */
   color: white; /* White text for selected */
 }
-
+/* Layer image background and functional components
+     AI assisted content completion 
+     line 115 to 147*/
 /* Main content area styling */
 .main-content {
+  position: relative;
   flex: 3;
   padding: 20px;
-  background-color: #1a2a3a; /* Deep blue background */
-  overflow-y: auto;
-  color: #f0f0f0; /* Light grey for text */
+  background-color: rgba(17, 34, 51, 0.7); 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../public/2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(8px); 
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.content-layer {
+  position: relative;
+  z-index: 2; 
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  color: #f0f0f0;
 }
 
 /* Post area styling */
