@@ -8,17 +8,32 @@ import axios from "axios";
 import SearchPage from "./SearchPage";
 
 function BlogPage() {
-  const [selectedCourse, setSelectedCourse] = useState("CS385"); // Track the selected course
-  const [posts, setPosts] = useState([]); // Store all posts
-  const [newPostContent, setNewPostContent] = useState(""); // Content of the new post
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Selected date in the calendar
-  const [weather, setWeather] = useState(null); // Weather data
-  const [location, setLocation] = useState("Maynooth, Kildare"); // Default location
-  const [search, setSearch] = useState(""); // Search query
-  const [showSearchPage, setShowSearchPage] = useState(false); // Toggle search page visibility
+  // State to track the selected course
+  const [selectedCourse, setSelectedCourse] = useState("CS385");
 
-  const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"]; // List of courses
-//NEW function, get data from database
+  // State to store all posts
+  const [posts, setPosts] = useState([]);
+
+  // State for new post content
+  const [newPostContent, setNewPostContent] = useState("");
+
+  // State for the selected date on the calendar
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // State to store weather data
+  const [weather, setWeather] = useState(null);
+
+  // State to store location for weather query
+  const [location, setLocation] = useState("Maynooth, Kildare");
+
+  // State for search query and visibility of search page
+  const [search, setSearch] = useState("");
+  const [showSearchPage, setShowSearchPage] = useState(false);
+
+  // List of available courses
+  const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"];
+
+  // Fetch posts from the server when the component is mounted
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -34,11 +49,10 @@ function BlogPage() {
     fetchPosts();
   }, []);
 
+  // Fetch weather data when location changes
   useEffect(() => {
-    // Fetch weather data for the location
     const fetchWeather = async () => {
       try {
-        // Use Nominatim API to get coordinates for the location
         const geocodeResponse = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${location}`
         );
@@ -46,7 +60,6 @@ function BlogPage() {
         if (geocodeData.length > 0) {
           const { lat, lon } = geocodeData[0];
 
-          // Fetch weather data using Open-Meteo API
           const weatherResponse = await fetch(
             `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&forecast_days=2`
           );
@@ -60,25 +73,27 @@ function BlogPage() {
       }
     };
     fetchWeather();
-  }, [location]); // Update weather when location changes
+  }, [location]);
 
+  // Handle adding a new post
   const handlePost = async () => {
     if (newPostContent.trim()) {
       const newPost = {
         course: selectedCourse,
         content: newPostContent,
         date: selectedDate.toLocaleDateString(),
-        author: "Author Name", 
-        avatar: "Screenshot.png",
-        //需要实现头像功能么？ 不需要可以删掉上面这行
+        author: "Anonymous",
         likes: 0,
         comments: [],
       };
 
       try {
-        const response = await axios.post("http://localhost:5000/addPost", newPost);
+        const response = await axios.post(
+          "http://localhost:5000/addPost",
+          newPost
+        );
         if (response.data.success) {
-          setPosts([newPost, ...posts]);
+          setPosts([response.data.post, ...posts]); // Ensure server-generated post is added
           setNewPostContent("");
         } else {
           console.error("Error saving post:", response.data.message);
@@ -88,7 +103,29 @@ function BlogPage() {
       }
     }
   };
-  
+
+  // Handle deleting a post
+  const handleDeletePost = async (postIndex) => {
+    try {
+      const postToDelete = posts[postIndex];
+      if (!postToDelete.id) {
+        console.error("Post ID is missing");
+        return;
+      }
+
+      const response = await axios.post("http://localhost:5000/deletePost", {
+        id: postToDelete.id,
+      });
+      if (response.data.success) {
+        setPosts(posts.filter((_, index) => index !== postIndex));
+      } else {
+        console.error("Error deleting post:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <div className="blog-page">
       <Header
@@ -102,7 +139,7 @@ function BlogPage() {
           weather={weather}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          setLocation={setLocation} // Pass location setter to Sidebar
+          setLocation={setLocation}
         />
 
         <div className="main-content">
@@ -119,6 +156,7 @@ function BlogPage() {
               newPostContent={newPostContent}
               setNewPostContent={setNewPostContent}
               handlePost={handlePost}
+              handleDeletePost={handleDeletePost}
               selectedCourse={selectedCourse}
             />
           )}
@@ -128,7 +166,7 @@ function BlogPage() {
   );
 }
 
-// Header component: Displays course buttons and search functionality
+// Header component for course selection and search functionality
 function Header({
   courses,
   setSelectedCourse,
@@ -155,7 +193,7 @@ function Header({
   );
 }
 
-// Sidebar component: Displays calendar and weather information
+// Sidebar component to display calendar and weather information
 function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   const weatherConditions = {
     0: "Clear sky",
@@ -189,7 +227,6 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   };
 
   const handleLocationChange = (e) => {
-    // Update location based on user input
     setLocation(e.target.value);
   };
 
@@ -199,10 +236,9 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
         <Calendar
           value={selectedDate}
           onChange={setSelectedDate}
-          locale="en-US" // Ensure calendar displays in English
-          tileClassName={
-            ({ date }) =>
-              date.getDay() === 0 || date.getDay() === 6 ? "weekend" : null // Highlight weekends
+          locale="en-US"
+          tileClassName={({ date }) =>
+            date.getDay() === 0 || date.getDay() === 6 ? "weekend" : null
           }
         />
       </div>
@@ -212,7 +248,7 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
         <input
           type="text"
           placeholder="Enter location (e.g., City, Country)"
-          onBlur={handleLocationChange} // Change location on input blur
+          onBlur={handleLocationChange}
         />
         {weather ? (
           <div>
@@ -257,12 +293,13 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   );
 }
 
-// PostArea component: Displays posts and allows adding new ones
+// PostArea component to handle new posts and display existing posts
 function PostArea({
   posts,
   newPostContent,
   setNewPostContent,
   handlePost,
+  handleDeletePost,
   selectedCourse,
 }) {
   const filteredPosts = posts.filter((post) => post.course === selectedCourse);
@@ -277,32 +314,34 @@ function PostArea({
       />
       <button onClick={handlePost}>Post</button>
       {filteredPosts.map((post, index) => (
-        <Post key={index} post={post} />
+        <Post
+          key={index}
+          post={post}
+          handleDelete={() => handleDeletePost(index)}
+        />
       ))}
     </div>
   );
 }
 
-// Post component: Displays a single post
-function Post({ post }) {
-  const [likes, setLikes] = useState(post.likes); // Track likes for the post
-  const [comments, setComments] = useState(post.comments); // Track comments for the post
-  const [newComment, setNewComment] = useState(""); // New comment content
-  const [showComments, setShowComments] = useState(false); // Toggle comment visibility
+// Post component to display a single post and its actions
+function Post({ post, handleDelete }) {
+  const [likes, setLikes] = useState(post.likes);
+  const [comments, setComments] = useState(post.comments);
+  const [newComment, setNewComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
 
+  // Handle post like functionality
   const handleLike = () => {
-    // Increment like count
     setLikes(likes + 1);
   };
 
+  // Handle adding a new comment
   const handleAddComment = () => {
-    // Add a new comment
     if (newComment.trim()) {
       const comment = {
-        author: "Commenter Name",
-        avatar: "CommenterAvatar.png",
+        author: "Author Name", // Display author name
         content: newComment,
-        date: new Date().toLocaleString(),
       };
       setComments([...comments, comment]);
       setNewComment("");
@@ -312,8 +351,10 @@ function Post({ post }) {
   return (
     <div className="post">
       <div className="post-header">
-        <img src={post.avatar} alt="Avatar" className="avatar" />
         <span>{post.author}</span>
+        <button onClick={handleDelete} style={{ marginLeft: "auto" }}>
+          ❌ Delete
+        </button>
       </div>
       <p>{post.content}</p>
       <div className="post-footer">
@@ -333,13 +374,9 @@ function Post({ post }) {
           <h4>Comments:</h4>
           {comments.map((comment, index) => (
             <div key={index} className="comment">
-              <img
-                src={comment.avatar}
-                alt="Avatar"
-                className="comment-avatar"
-              />
-              <span className="comment-date">{comment.date}</span>
-              <p>{comment.content}</p>
+              <p>
+                <strong>{comment.author}:</strong> {comment.content}
+              </p>
             </div>
           ))}
           <input

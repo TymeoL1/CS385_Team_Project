@@ -10,18 +10,18 @@ const SignPage = ({ setIsLoggedIn }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
 
-  // 背景图片数组
+  // Array of background images
   const images = ["/1.jpg", "/0.jpg"];
 
-  // 自动切换背景图片
+  // Automatically switch background images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 4000); // 切换
-    return () => clearInterval(interval); // 清除定时器
+    }, 4000); // Switch every 4 seconds
+    return () => clearInterval(interval); // Clear interval
   }, [images.length]);
 
-  // 登录逻辑
+  // Login logic
   const Login = async () => {
     try {
       const response = await axios.post("http://localhost:5000/login", {

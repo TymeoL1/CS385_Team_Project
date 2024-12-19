@@ -1,8 +1,8 @@
 import React from "react";
 
-// SearchPage 组件：显示搜索结果
+// SearchPage component: displays search results
 function SearchPage({ posts, search, setSearch, setShowSearchPage }) {
-  // 过滤帖子，根据搜索词
+  // Filter posts based on search term
   const filteredPosts = posts.filter(
     (post) =>
       post.content.toLowerCase().includes(search) ||

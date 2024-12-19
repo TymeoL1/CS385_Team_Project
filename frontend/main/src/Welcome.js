@@ -11,18 +11,18 @@ import "./App.css";
 import SignPage from "./sign_page/src/SignPage";
 
 function WelcomePage() {
-  //const [showBlogPage, setShowBlogPage] = useState(false);
+  // const [showBlogPage, setShowBlogPage] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // 图片数组
+  // Array of images
   const images = ["/1.jpg", "/0.jpg"];
 
-  // 自动切换背景图片
+  // Automatically switch background images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // 每5秒切换
-    return () => clearInterval(interval); // 清除定时器
+    }, 5000); // Switch every 5 seconds
+    return () => clearInterval(interval); // Clear interval
   }, [images.length]);
 
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ function WelcomePage() {
 }
 
 function Welcome() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 登录状态管理
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
 
   return (
     <Router>
@@ -59,7 +59,7 @@ function Welcome() {
         <Route
           path="/blog"
           element={
-            isLoggedIn ? <BlogPage /> : <Navigate to="/login" /> // 检查登录状态
+            isLoggedIn ? <BlogPage /> : <Navigate to="/login" /> // Check login state
           }
         />{" "}
         {/* Blog Page */}
