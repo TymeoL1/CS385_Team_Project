@@ -25,7 +25,9 @@ function SearchPage({ posts, search, setSearch, setShowSearchPage }) {
         filteredPosts.map((post, index) => (
           <div key={index} className="post">
             <div className="post-header">
+              {/*remove 取消该功能
               <img src={post.avatar} alt="Avatar" className="avatar" />
+              */}
               <span>{post.author}</span>
             </div>
             <p>{post.content}</p>

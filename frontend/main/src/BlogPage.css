@@ -12,7 +12,7 @@
   width: 100%;
   flex-direction: column;
   height: 100vh;
-  background-color: #1a2a3a; /* Deep blue background */
+  background-color: #1a2a3a;
 }
 
 /* Header styling */
@@ -31,7 +31,7 @@
   font-size: 14px;
   border: none;
   border-radius: 4px;
-  background-color: #4a90e2; /* Bright blue for contrast */
+  background-color:#445566; /* Bright blue for contrast */
   color: white; /* White text */
   cursor: pointer;
   transition: all 0.3s ease; /* Smooth transition */
@@ -127,7 +127,7 @@
 .post-area button,
 .search-page button {
   padding: 8px 16px;
-  background-color: #4a90e2; /* Bright blue */
+  background-color: #3A9BFF; /* Bright blue */
   color: white; /* White text */
   border: none;
   cursor: pointer;
@@ -157,9 +157,15 @@
 }
 
 /* Author name in italics */
-.post .post-header .author-name {
+.post .author-name {
   font-style: italic;
   color: #4a90e2; /* Bright blue for contrast */
+}
+
+/*user name highlight --Li*/
+.post-header {
+  font-style: italic;
+  color: #37D67A;
 }
 
 .post-footer {
@@ -269,7 +275,7 @@
 /* React Calendar component styling */
 .react-calendar {
   width: 100%; /* Width */
-  background-color: #112233; /* Very dark blue */
+  background-color: #445566; /* Very dark blue */
   border: 1px solid #ccc; /* Light grey for border */
   border-radius: 10px; /* Border radius */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
@@ -285,7 +291,7 @@
 
 /* Weekend styling */
 .react-calendar__month-view__days__day--weekend {
-  color: red; /* Red color for weekends */
+  color: #FFAA33; /* Red color for weekends */
 }
 
 /* Selected date cell styling */

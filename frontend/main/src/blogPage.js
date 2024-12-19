@@ -352,7 +352,11 @@ function Post({ post, handleDelete }) {
     <div className="post">
       <div className="post-header">
         <span>{post.author}</span>
-        <button onClick={handleDelete} style={{ marginLeft: "auto" }}>
+        <button onClick={handleDelete} style={{ 
+          marginLeft: "auto" ,
+          backgroundColor: "#233a52",
+          color: "#FFAA33"
+        }}>
           ❌ Delete
         </button>
       </div>
