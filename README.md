@@ -2,14 +2,14 @@
 This project consists of two parts: the backend and the frontend.<br>
 
 To start the backend:<br>
-Run the following command in the terminal:
-<span style="color:blue">node server.js</span><br>
+Run the following command in the terminal:<br>
+node server.js<br>
 To start the frontend:<br>
-Navigate to the frontend directory and run:
+Navigate to the frontend directory and run:<br>
 npm start<br>
 
 Test Credentials:<br>
-Username: test1
+Username: test1<br>
 Password: root
 
 # 19.Dec.2024 Update <br>
