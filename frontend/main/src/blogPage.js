@@ -6,34 +6,35 @@ import axios from "axios";
 import SearchPage from "./SearchPage";
 
 function BlogPage() {
-  const [selectedCourse, setSelectedCourse] = useState("CS385");
-  const [posts, setPosts] = useState([]);
-  const [newPostContent, setNewPostContent] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [weather, setWeather] = useState(null);
-  const [location, setLocation] = useState("Maynooth, Kildare");
-  const [search, setSearch] = useState("");
-  const [showSearchPage, setShowSearchPage] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState("CS385"); // Track selected course
+  const [posts, setPosts] = useState([]); // Store all posts
+  const [newPostContent, setNewPostContent] = useState(""); // Track new post content
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Track selected date
+  const [weather, setWeather] = useState(null); // Store weather data
+  const [location, setLocation] = useState("Maynooth, Kildare"); // Track location for weather query
+  const [search, setSearch] = useState(""); // Track search query
+  const [showSearchPage, setShowSearchPage] = useState(false); // Control search page visibility
 
-  const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"];
+  const courses = ["CS385", "CS353", "CS264", "CS357", "CS310"]; // List of available courses
 
+  // Fetch posts when the component mounts
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get("http://localhost:5000/getPosts");
         if (response.data.success) {
           console.log("Fetched Posts:", response.data.posts);
-          setPosts(response.data.posts);
+          setPosts(response.data.posts); // Set the fetched posts
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
-  
-    fetchPosts();
-  }, []);
-  
 
+    fetchPosts(); // Call the fetchPosts function
+  }, []);
+
+  // Fetch weather data when location changes
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -43,12 +44,12 @@ function BlogPage() {
         const geocodeData = await geocodeResponse.json();
         if (geocodeData.length > 0) {
           const { lat, lon } = geocodeData[0];
-
+          //latitude and longitude
           const weatherResponse = await fetch(
             `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&forecast_days=2`
           );
           const weatherData = await weatherResponse.json();
-          setWeather({ ...weatherData, location });
+          setWeather({ ...weatherData, location }); // Set the weather data
         } else {
           console.error("Location not found.");
         }
@@ -56,9 +57,11 @@ function BlogPage() {
         console.error("Error fetching weather data:", error);
       }
     };
-    fetchWeather();
+
+    fetchWeather(); // Call the fetchWeather function
   }, [location]);
 
+  // Handle adding a new post
   const handlePost = async () => {
     if (newPostContent.trim()) {
       const newPost = {
@@ -77,8 +80,8 @@ function BlogPage() {
         );
         if (response.data.success) {
           const createdPost = response.data.post;
-          setPosts([createdPost, ...posts]);
-          setNewPostContent(""); // 清空输入框
+          setPosts([createdPost, ...posts]); // Add new post to posts array
+          setNewPostContent(""); // Clear the input field
         } else {
           console.error("Error saving post:", response.data.message);
         }
@@ -88,16 +91,20 @@ function BlogPage() {
     }
   };
 
+  // Handle adding a comment to a post
   const handleAddComment = async (postId, comment) => {
     try {
       const response = await axios.post("http://localhost:5000/addComment", {
         postId,
         comment,
       });
-
       if (response.data.success) {
         const updatedPost = response.data.post;
-        setPosts(posts.map((post) => (post._id === updatedPost._id ? updatedPost : post)));
+        setPosts(
+          posts.map((post) =>
+            post._id === updatedPost._id ? updatedPost : post
+          )
+        ); // Update the specific post with new comment
       } else {
         console.error("Error adding comment:", response.data.message);
       }
@@ -106,11 +113,14 @@ function BlogPage() {
     }
   };
 
+  // Handle deleting a post
   const handleDeletePost = async (postId) => {
     try {
-      const response = await axios.post("http://localhost:5000/deletePost", { id: postId });
+      const response = await axios.post("http://localhost:5000/deletePost", {
+        id: postId,
+      });
       if (response.data.success) {
-        setPosts(posts.filter((post) => post._id !== postId));
+        setPosts(posts.filter((post) => post._id !== postId)); // Remove the post from posts array
       } else {
         console.error("Error deleting post:", response.data.message);
       }
@@ -135,7 +145,7 @@ function BlogPage() {
           setLocation={setLocation}
         />
         {/* Layer image background and functional components
-            AI assisted content completion */}
+            AI assisted(ChatGPT) content completion */}
         <div className="main-content">
           <div className="background-layer"></div>
           <div className="content-layer">
@@ -164,14 +174,21 @@ function BlogPage() {
   );
 }
 
-function Header({ courses, setSelectedCourse, selectedCourse, setShowSearchPage }) {
+function Header({
+  courses,
+  setSelectedCourse,
+  selectedCourse,
+  setShowSearchPage,
+}) {
   return (
     <header className="header">
       {courses.map((course) => (
         <button
           key={course}
           onClick={() => setSelectedCourse(course)}
-          className={`course-button ${selectedCourse === course ? "active" : ""}`}
+          className={`course-button ${
+            selectedCourse === course ? "active" : ""
+          }`}
         >
           {course}
         </button>
@@ -182,7 +199,7 @@ function Header({ courses, setSelectedCourse, selectedCourse, setShowSearchPage 
     </header>
   );
 }
-
+// This weatherConditions is AI assisted(ChatGPT)
 function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   const weatherConditions = {
     0: "Clear sky",
@@ -216,7 +233,7 @@ function Sidebar({ weather, selectedDate, setSelectedDate, setLocation }) {
   };
 
   const handleLocationChange = (e) => {
-    setLocation(e.target.value);
+    setLocation(e.target.value); // Update location for weather query
   };
 
   return (
@@ -291,6 +308,7 @@ function PostArea({
   handleAddComment,
   selectedCourse,
 }) {
+  // Filter posts for the currently selected course
   const filteredPosts = (posts || []).filter(
     (post) => post && post.course === selectedCourse
   );
@@ -304,6 +322,7 @@ function PostArea({
         onChange={(e) => setNewPostContent(e.target.value)}
       />
       <button onClick={handlePost}>Post</button>
+      {/* Walk through and display the filtered posts */}
       {filteredPosts.map((post) => (
         <Post
           key={post._id || post.id}
@@ -317,15 +336,17 @@ function PostArea({
 }
 
 function Post({ post, handleDelete, handleAddComment }) {
-  const [likes, setLikes] = useState(post.likes);
-  const [comments, setComments] = useState(post.comments);
-  const [newComment, setNewComment] = useState("");
-  const [showComments, setShowComments] = useState(false);
+  const [likes, setLikes] = useState(post.likes); // Track likes
+  const [comments, setComments] = useState(post.comments); // Track comments
+  const [newComment, setNewComment] = useState(""); // Track new comment content
+  const [showComments, setShowComments] = useState(false); // Control comment visibility
 
+  // Handle like button click
   const handleLike = () => {
     setLikes(likes + 1);
   };
 
+  // Handle adding a new comment
   const handleAddCommentClick = () => {
     if (newComment.trim()) {
       const comment = {
@@ -334,7 +355,7 @@ function Post({ post, handleDelete, handleAddComment }) {
         date: new Date().toLocaleString(),
       };
       handleAddComment(post._id, comment);
-      setNewComment("");
+      setNewComment(""); // Clear the comment input field
     }
   };
 

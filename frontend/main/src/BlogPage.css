@@ -1,11 +1,10 @@
-/* This CSS styling is based on AI-generated code and has been modified for this project using AI assistance. */
-
 /* Global styling */
 .globle {
   width: 100%;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -30,13 +29,13 @@ html, body {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow for elegance */
 }
 
-/* Header buttons */
+/* Header buttons, This CSS styling is based on AI-generated(ChatGPT) code and has been modified */
 .header button {
   padding: 8px 16px;
   font-size: 14px;
   border: none;
   border-radius: 4px;
-  background-color:#445566; /* Bright blue for contrast */
+  background-color: #445566; /* Bright blue for contrast */
   color: white; /* White text */
   cursor: pointer;
   transition: all 0.3s ease; /* Smooth transition */
@@ -73,8 +72,8 @@ html, body {
   flex: 1;
   min-width: 250px;
   padding: 20px;
-  background-color: #1B2838; /* Very dark blue */
-  color: #D1D5DB; /* Light grey for text */
+  background-color: #1b2838; /* Very dark blue */
+  color: #d1d5db; /* Light grey for text */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -86,9 +85,9 @@ html, body {
 }
 
 .sidebar input {
-  background-color: #233A52;
-  color: #FFFFFF;
-  border: 1px solid #3A9BFF;
+  background-color: #233a52;
+  color: #ffffff;
+  border: 1px solid #3a9bff;
   border-radius: 5px;
   padding: 5px 10px;
 }
@@ -106,14 +105,14 @@ html, body {
   color: white; /* White text for selected */
 }
 /* Layer image background and functional components
-     AI assisted content completion 
+     AI assisted(ChatGPT) content completion 
      line 115 to 147*/
 /* Main content area styling */
 .main-content {
   position: relative;
   flex: 3;
   padding: 20px;
-  background-color: rgba(17, 34, 51, 0.7); 
+  background-color: rgba(17, 34, 51, 0.7);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -121,24 +120,24 @@ html, body {
 }
 
 .main-content::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../public/2.jpg');
+  background-image: url("../public/2.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(8px); 
+  filter: blur(8px);
   opacity: 0.7;
   pointer-events: none;
 }
 
 .content-layer {
   position: relative;
-  z-index: 2; 
+  z-index: 2;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -173,20 +172,20 @@ html, body {
 .post-area button,
 .search-page button {
   padding: 8px 16px;
-  background-color: #3A9BFF; /* Bright blue */
+  background-color: #3a9bff; /* Bright blue */
   color: white; /* White text */
   border: none;
   cursor: pointer;
 }
 
-/* Individual post styling */
+/* Individual post styling This CSS styling is based on AI-generated(ChatGPT) code and has been modified */
 .post {
   background-color: #233a52; /* Darker blue */
   padding: 10px;
   margin-bottom: 10px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 1px solid #2D3E50;
+  border: 1px solid #2d3e50;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -212,7 +211,7 @@ html, body {
 /*user name highlight --Li*/
 .post-header {
   font-style: italic;
-  color: #37D67A;
+  color: #37d67a;
 }
 
 .post-footer {
@@ -319,7 +318,7 @@ html, body {
   margin-bottom: 20px;
 }
 
-/* React Calendar component styling */
+/* React Calendar component styling This CSS styling is based on AI-generated(ChatGPT) code and has been modified */
 .react-calendar {
   width: 100%; /* Width */
   background-color: #445566; /* Very dark blue */
@@ -338,7 +337,7 @@ html, body {
 
 /* Weekend styling */
 .react-calendar__month-view__days__day--weekend {
-  color: #FFAA33; /* Red color for weekends */
+  color: #ffaa33; /* Red color for weekends */
 }
 
 /* Selected date cell styling */
